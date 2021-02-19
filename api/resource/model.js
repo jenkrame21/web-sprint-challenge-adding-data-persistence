@@ -1,6 +1,18 @@
-// - [ ] `[POST] /api/resources`
-//   - Example of response body: `{"resource_id":1,"resource_name":"foo","resource_description":null}`
+const db = require("../../data/dbConfig.js");
 
-// - [ ] `[GET] /api/resources`
-//   - Example of response body: `[{"resource_id":1,"resource_name":"foo","resource_description":null}]`
+module.exports = {
 
+    find() {
+        return db("resources");
+    },
+
+    create(resource) {
+        return db("resources")
+            .insert(resource)
+            .then(([id]) => {
+                return db("resources")
+                    .where("resource_id", id)
+                    .first();
+            });
+    }
+};
