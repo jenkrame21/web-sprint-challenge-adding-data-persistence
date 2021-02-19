@@ -4,7 +4,6 @@ const Resources = require("./model.js");
 
 const router = express.Router();
 
-// GET all resources
 router.get("/", (req, res) => {
     Resources.find()
         .then((resources) => {
@@ -17,7 +16,6 @@ router.get("/", (req, res) => {
         });
 });
 
-// POST new resource
 router.post("/", (req, res) => {
     const resourceData = req.body;
 
