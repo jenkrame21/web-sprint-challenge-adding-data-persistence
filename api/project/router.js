@@ -1,13 +1,17 @@
 const express = require("express");
 
 const db = require("../../data/dbConfig.js");
-const Project = require("./model.js");
+const Projects = require("./model.js");
 
 const router = express.Router();
 
-// Get All Projects
+// - [ ] `[POST] /api/projects`
+//  - Even though `project_completed` is stored as an integer, the API uses booleans when interacting with the client
+//  - Example of response body: `{"project_id":1,"project_name":"bar","project_description":null,"project_completed":false}`
+
+// GET All Projects
 router.get("/", (req, res) => {
-    Project.find()
+    Projects.find()
         .then((projects) => {
             res.json(projects);
         })
@@ -18,15 +22,12 @@ router.get("/", (req, res) => {
         });
 });
 
-// Get Project By ID
+// GET Project By ID
 router.get("/:id", (req, res) => {
     const { id } = req.params;
 
-    db("projects")
-        .where({ id })
-        .then((projects) => {
-            const project = projects[0];
-
+    Projects.findById(id)
+        .then((project) => {
             if (project) {
                 res.json(project);
             } else {
@@ -38,6 +39,21 @@ router.get("/:id", (req, res) => {
         .catch((error) => {
             res.status(500).json({
                 message: "Failed to get project"
+            });
+        });
+});
+
+// POST a new Project
+router.post("/", (req, res) => {
+    const projectData = req.body;
+
+    Projects.create(projectData)
+        .then((project) => {
+            res.status(201).json(project);
+        })
+        .catch((error) => {
+            res.status(500).json({
+                message: "Failed to create new project"
             });
         });
 });
